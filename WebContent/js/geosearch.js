@@ -19,7 +19,7 @@ $(document)
 
 					var layer = L
 							.tileLayer(
-									'http://korona.geog.uni-heidelberg.de/tiles/roads/x={x}&y={y}&z={z}',
+									'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
 									{
 										attribution : 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>'
 									});

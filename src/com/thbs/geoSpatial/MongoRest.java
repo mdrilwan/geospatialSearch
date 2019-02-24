@@ -22,7 +22,7 @@ import com.mongodb.client.MongoCursor;
 public class MongoRest {
 
 	MongoClient client = new MongoClient();
-	MongoCollection<Document> collection = client.getDatabase("GeosaptialData").getCollection("restaurants");
+	MongoCollection<Document> collection = client.getDatabase("geospatialData").getCollection("restaurants");
 
 	@GET
 	@Path("/getData")
