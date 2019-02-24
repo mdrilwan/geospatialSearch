@@ -1,0 +1,33 @@
+<html>
+<head>
+<meta charset="utf-8"/>
+<script src="js/leaflet.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script type='text/javascript' src='js/leaflet.markercluster-src.js'></script>
+<script type='text/javascript' src='js/geosearch.js'></script>
+
+<link rel="stylesheet" href="css/leaflet.css"/>
+<link rel="stylesheet" href="css/style.css"/>
+<link rel="stylesheet" type="text/css" href="css/MarkerCluster.css" />
+<link rel="stylesheet" type="text/css" href="css/MarkerCluster.Default.css" /> 
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+</head>
+<body>
+	
+	<div id = "wrapper">
+	<div id="mapid" class="container-fluid background"></div>
+	<div id="searchPanel">
+		        	<form>
+		        		<label for="lat" id="textLabel"><b>Enter the Latitude</b></label><br/>
+		        		<input id="lat" style="background-color:#F5F5F5" size="15"><br/><br/>
+		       		</form>
+		       		<form>
+		         		<label for="long" id="hashtagLabel"><b>Enter the Longitude</b> </label><br/>
+		        		<input id="long" style="background-color:#F5F5F5" size="15"><br/><br/>
+		        	</form>
+		        	<button onclick="geoSpatial()">Search</button><button onclick ="getAllData()"> Reset </button>
+		</div>	
+	</div>
+</body>
+</html>
