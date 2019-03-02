@@ -1,0 +1,50 @@
+<html>
+<head>
+<meta charset="utf-8" />
+<script src="js/leaflet.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery-ui.min.js"></script>
+<script src="js/semantic.min.js"></script>
+<script type='text/javascript' src='js/leaflet.markercluster-src.js'></script>
+<script type='text/javascript' src='js/near.js'></script>
+
+
+<link rel="stylesheet" href="css/jquery-ui.min.css">
+<link rel="stylesheet" href="css/jquery-ui.css">
+<link href="css/semantic.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="css/leaflet.css" />
+<link rel="stylesheet" type="text/css" href="css/MarkerCluster.css" />
+<link rel="stylesheet" type="text/css"
+	href="css/MarkerCluster.Default.css" />
+
+</head>
+<body>
+
+	<div id="wrapper" class="ui grid" style="height: 100%;">
+		<div class="three wide column">
+			<div id="searchPanel">
+				<form class="ui form segment">
+					<div class="ui hidden divider"></div>
+					<div class="field">
+						<label><b>Enter the Hospital Name</b></label><br /> <input
+							id="name" style="background-color: #F5F5F5" size="15"><br />
+					</div>
+					<div class="ui hidden divider"></div>
+					<div class="field">
+						<label><b>Enter distance in radians</b> </label><br /> <input
+							id="dist" style="background-color: #F5F5F5" size="15"><br />
+						<br />
+					</div>
+					<div class="ui hidden divider"></div>
+				</form>
+
+				<button onclick="geoSpatial()">Search</button>
+				<button onclick="getAllData()">Reset</button>
+			</div>
+		</div>
+		<div class="thirteen wide column">
+			<div id="mapid" style="position: relative; height: 100%;"></div>
+		</div>
+	</div>
+</body>
+</html>

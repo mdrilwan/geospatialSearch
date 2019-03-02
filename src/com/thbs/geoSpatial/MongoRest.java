@@ -1,6 +1,8 @@
 package com.thbs.geoSpatial;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -10,7 +12,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.bson.Document;
-import org.bson.types.BasicBSONList;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.ParseException;
 
@@ -22,7 +23,7 @@ import com.mongodb.client.MongoCursor;
 public class MongoRest {
 
 	MongoClient client = new MongoClient();
-	MongoCollection<Document> collection = client.getDatabase("geospatialData").getCollection("restaurants");
+	MongoCollection<Document> collection = client.getDatabase("geospatialData").getCollection("hospitals");
 
 	@GET
 	@Path("/getData")
@@ -31,7 +32,7 @@ public class MongoRest {
 
 		JSONArray result = new JSONArray();
 
-		MongoCursor<Document> cursor = collection.find().iterator();
+		MongoCursor<Document> cursor = collection.find().limit(1000).iterator();
 
 		while (cursor.hasNext()) {
 			Document doc = cursor.next();
@@ -42,36 +43,74 @@ public class MongoRest {
 	}
 
 	@GET
-	@Path("/getLocationData/{lat}/{long}")
+	@Path("/2d/near/{hospitalName}/{distance}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getLocationData(@PathParam("lat") String lati, @PathParam("long") String longi)
-			throws IOException, ParseException {
+	public Response getNear(@PathParam("hospitalName") String hospitalName,
+			@PathParam("distance") String maxDistance) throws IOException, ParseException {
+
+		ArrayList coordinates = new ArrayList<>();
+		MongoCursor<Document> cursor = collection.find(new Document("name", hospitalName)).iterator();
+		while (cursor.hasNext()) {
+			Document doc = cursor.next();
+			Document loc = (Document) doc.get("location");
+			coordinates = (ArrayList) loc.get("coordinates");
+		}
 
 		JSONArray result = new JSONArray();
 
-		Document location = new Document();
-		BasicBSONList centerSphereQuery = new BasicBSONList();
-		BasicBSONList points = new BasicBSONList();
-		points.add(Double.parseDouble(lati));
-		points.add(Double.parseDouble(longi));
-		centerSphereQuery.add(points);
-		centerSphereQuery.add(5 / 3963.2);
+		if (coordinates.size() > 0) {
+			Document location = new Document();
+			location.put("$near", coordinates);
+			location.put("$maxDistance", Double.parseDouble(maxDistance));
 
-		location.put("$geoWithin", new Document("$centerSphere", centerSphereQuery));
+			Document query = new Document();
+			query.put("location.coordinates", location);
 
-		Document query = new Document();
-		query.put("location", location);
+			MongoCursor<Document> newcursor = collection.find(query).iterator();
 
-		MongoCursor<Document> cursor = collection.find(query).iterator();
+			while (newcursor.hasNext()) {
+				Document doc = newcursor.next();
+				doc.remove("_id");
+				result.add(doc);
+			}
+		}
 
+		return Response.ok().entity(result.toString()).build();
+	}
+
+	@GET
+	@Path("/2d/nearsphere/{hospitalName}/{distance}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getNearSphere(@PathParam("hospitalName") String hospitalName,
+			@PathParam("distance") String maxDistance) throws IOException, ParseException {
+
+		ArrayList coordinates = new ArrayList<>();
+		MongoCursor<Document> cursor = collection.find(new Document("name", hospitalName)).iterator();
 		while (cursor.hasNext()) {
 			Document doc = cursor.next();
-			doc.remove("_id");
-			result.add(doc);
+			Document loc = (Document) doc.get("location");
+			coordinates = (ArrayList) loc.get("coordinates");
 		}
-		// System.out.println(result);
 
-		// System.out.println(rows);
+		JSONArray result = new JSONArray();
+
+		if (coordinates.size() > 0) {
+			Document location = new Document();
+			location.put("$nearSphere", coordinates);
+			location.put("$maxDistance", Double.parseDouble(maxDistance));
+
+			Document query = new Document();
+			query.put("location.coordinates", location);
+
+			MongoCursor<Document> newcursor = collection.find(query).iterator();
+
+			while (newcursor.hasNext()) {
+				Document doc = newcursor.next();
+				doc.remove("_id");
+				result.add(doc);
+			}
+		}
+
 		return Response.ok().entity(result.toString()).build();
 	}
 }

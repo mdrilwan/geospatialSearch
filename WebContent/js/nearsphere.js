@@ -1,6 +1,6 @@
+var map;
 var cluster1;
 var cluster2;
-var map;
 
 $(document)
 		.ready(
@@ -13,9 +13,9 @@ $(document)
 						animateAddingMarkers : true
 					});
 
-					var southWest = new L.latLng(-60.11605, -228.51562), northEast = L
-							.latLng(80.01954, 228.86719), bounds = L
-							.latLngBounds(southWest, northEast);
+					var bounds = L.latLngBounds([ 14.43468021529728,
+							-128.75976562500003 ], [ 56.897003921272606,
+							-32.87109375000001 ]);
 
 					var layer = L
 							.tileLayer(
@@ -39,15 +39,14 @@ $(document)
 				});
 
 function getAllData() {
-	$('#lat').val("");
-	$('#long').val("");
+
 	map.removeLayer(cluster2);
 	cluster1 = new L.MarkerClusterGroup({
 		animateAddingMarkers : true
 	});
+
 	$.ajax({
 		type : 'GET',
-		// map.fitWorld();
 		url : '/geospatialSearch/rest/geoSearch/getData',
 		dataType : 'JSON',
 		success : function(response) {
@@ -56,10 +55,16 @@ function getAllData() {
 
 				for (var i = 0; i < response.length; i++) {
 
-					cluster1.addLayer(new L.Marker(
-							response[i].location.coordinates)
-							.bindPopup(response[i].name + "\t"
-									+ response[i].location.coordinates));
+					var latLon = [ response[i].location.coordinates[1],
+							response[i].location.coordinates[0] ];
+					cluster1.addLayer(new L.Marker(latLon)
+							.bindPopup(response[i].name
+									+ "<br/><b>Address</b> : "
+									+ response[i].address
+									+ "<br/><b>City</b> : " + response[i].city
+									+ "<br/><b>State</b> : "
+									+ response[i].state + "<br/><b>Zip</b> : "
+									+ response[i].zip));
 				}
 			}
 			map.addLayer(cluster1);
@@ -72,16 +77,15 @@ function getAllData() {
 }
 
 function geoSpatial() {
+
 	map.removeLayer(cluster1);
 	cluster2 = new L.MarkerClusterGroup({
 		animateAddingMarkers : true
 	});
 
-	var url = '/geospatialSearch/rest/geoSearch/getLocationData';
-	url = url + "/" + document.getElementById("lat").value + "/"
-			+ document.getElementById("long").value;
-	lati = document.getElementById("lat").value;
-	longi = document.getElementById("long").value;
+	var url = '/geospatialSearch/rest/geoSearch/2d/nearsphere';
+	url = url + "/" + document.getElementById("name").value + "/"
+			+ document.getElementById("dist").value;
 
 	$.ajax({
 		type : 'GET',
@@ -93,10 +97,16 @@ function geoSpatial() {
 
 				for (var i = 0; i < response.length; i++) {
 
-					cluster2.addLayer(new L.Marker(
-							response[i].location.coordinates)
-							.bindPopup(response[i].name + "\t"
-									+ response[i].location.coordinates));
+					var latLon = [ response[i].location.coordinates[1],
+							response[i].location.coordinates[0] ];
+					cluster2.addLayer(new L.Marker(latLon)
+							.bindPopup(response[i].name
+									+ "<br/><b>Address</b> : "
+									+ response[i].address
+									+ "<br/><b>City</b> : " + response[i].city
+									+ "<br/><b>State</b> : "
+									+ response[i].state + "<br/><b>Zip</b> : "
+									+ response[i].zip));
 				}
 			}
 			map.addLayer(cluster2);
