@@ -10,6 +10,6 @@ Create geospatial index in mongodb using the following command, db.hospitals.cre
 
 Build the war file and try out the following links,
 
-  http://<host>:<port>/geospatialSearch/nearsphere.html
+  http://\<host\>:\<port\>/geospatialSearch/nearsphere.html
 
-  http://<host>:<port>/geospatialSearch/near.html
+  http://\<host\>:\<port\>/geospatialSearch/near.html
